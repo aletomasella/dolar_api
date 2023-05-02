@@ -3,7 +3,8 @@ import { config } from "dotenv";
 import cors from "cors";
 import { XMLParser } from "fast-xml-parser";
 import axios from "axios";
-
+import { writeFileSync } from "fs";
+import * as provincias from "./provincias.json";
 const API_URL = "https://www.dolarsi.com/api/dolarSiInfo.xml";
 
 function main() {
@@ -20,7 +21,17 @@ function main() {
       const response = await axios.get(API_URL);
       if (response.data) {
         const parsedData = xmlParser.parse(response.data);
-        return res.json(parsedData.cotiza);
+        const entries = Object.entries(parsedData.cotiza);
+        const provinciasArray = [] as any[];
+        const mappedEntries = entries.map(([key, value]) => {
+          const provincia =
+            provincias[key.toLowerCase() as keyof typeof provincias];
+          if (provincia) {
+            provinciasArray.push(value);
+          }
+        });
+
+        return res.json(provinciasArray);
       } else {
         return res.status(200).json({ message: "No Data Available" });
       }
