@@ -20,8 +20,7 @@ function main() {
       const response = await axios.get(API_URL);
       if (response.data) {
         const parsedData = xmlParser.parse(response.data);
-        delete parsedData["?xml"];
-        return res.json(parsedData);
+        return res.json(parsedData.cotiza);
       } else {
         return res.status(200).json({ message: "No Data Available" });
       }
