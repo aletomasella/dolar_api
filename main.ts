@@ -19,7 +19,9 @@ function main() {
       const xmlParser = new XMLParser();
       const response = await axios.get(API_URL);
       if (response.data) {
-        const { data } = xmlParser.parse(response.data);
+        const { cotiza: data } = xmlParser.parse(response.data) as {
+          cotiza: any;
+        };
         const keys = Object.keys(data);
         for (const key of keys) {
           data[key] = Object.values(data[key]);
